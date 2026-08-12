@@ -1,31 +1,54 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StaminaBar : MonoBehaviour // Clase para manejar la barra de estamina del jugador
+public class StaminaBar : MonoBehaviour
 {
-    public Image fillImage; // Imagen de la barra que se llena/vacía
-    public float maxStamina = 1f; // Estamina máxima (1 = 100%)
-    public float currentStamina = 1f; // Estamina actual (inicia llena)
-    public float drainSpeed = 1.5f; // Qué tan rápido se gasta la estamina
-    public float recoverSpeed = 0.5f; // Qué tan rápido se recupera la estamina
+    // =====================================================
+    // VARIABLES PÚBLICAS
+    // =====================================================
 
-    void Update() // Se ejecuta cada frame
+    public Image fillImage;             // Imagen de la barra
+    public float maxStamina = 1f;       // Stamina máxima
+    public float currentStamina = 1f;   // Stamina actual
+    public float drainSpeed = 0.3f;     // Velocidad al gastar stamina
+    public float recoverSpeed = 0.2f;   // Velocidad al recuperar stamina
+
+
+    // =====================================================
+    // UPDATE
+    // =====================================================
+
+    private void Update()
     {
-        // Actualiza la parte visual de la barra según el porcentaje actual
+        // Actualizar visualmente la barra
         fillImage.fillAmount = currentStamina / maxStamina;
     }
 
-    // Método para gastar estamina (llamado desde PlayerController cuando corres)
+
+    // =====================================================
+    // GASTAR STAMINA
+    // =====================================================
+
     public void UseStamina(float amount)
     {
-        currentStamina -= amount * drainSpeed; // Resta estamina multiplicada por la velocidad de gasto
-        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina); // Limita entre 0 y maxStamina
+        // Restar stamina
+        currentStamina -= amount * drainSpeed;
+
+        // Evitar que baje de 0
+        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
     }
 
-    // Método para recuperar estamina (llamado cuando no estás corriendo)
+
+    // =====================================================
+    // RECUPERAR STAMINA
+    // =====================================================
+
     public void RecoverStamina(float amount)
     {
-        currentStamina += amount * recoverSpeed; // Suma estamina multiplicada por la velocidad de recuperación
-        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina); // Limita entre 0 y maxStamina
+        // Recuperar stamina
+        currentStamina += amount * recoverSpeed;
+
+        // Evitar que supere el máximo
+        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
     }
 }
