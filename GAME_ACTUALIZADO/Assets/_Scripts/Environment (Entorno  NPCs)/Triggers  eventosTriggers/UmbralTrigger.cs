@@ -1,22 +1,59 @@
 using UnityEngine;
+using UnityEngine.Formats.Alembic.Importer;
 
 public class UmbralTrigger : MonoBehaviour
 {
-    public GameObject ramasEmpty; // arrastra aquí el Empty de las ramas
+    public AlembicStreamPlayer ramasAlembic;
 
-    void OnTriggerEnter(Collider other)
+    public float velocidadAbrir = 1f;
+    public float velocidadCerrar = 1f;
+
+    private bool jugadorCerca = false;
+
+    void Update()
     {
-        if (other.CompareTag("Player"))
+        if (ramasAlembic == null)
+            return;
+
+        if (jugadorCerca)
         {
-            ramasEmpty.SetActive(true); // aparecen
+            // Avanza la animación
+            ramasAlembic.CurrentTime += velocidadAbrir * Time.deltaTime;
+
+            // No permitir que pase del final
+            ramasAlembic.CurrentTime = Mathf.Clamp(
+                ramasAlembic.CurrentTime,
+                0f,
+                ramasAlembic.Duration
+            );
+        }
+        else
+        {
+            // Regresa la animación
+            ramasAlembic.CurrentTime -= velocidadCerrar * Time.deltaTime;
+
+            // No permitir que pase del inicio
+            ramasAlembic.CurrentTime = Mathf.Clamp(
+                ramasAlembic.CurrentTime,
+                0f,
+                ramasAlembic.Duration
+            );
         }
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            ramasEmpty.SetActive(false); // se ocultan al salir
+            jugadorCerca = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jugadorCerca = false;
         }
     }
 }
