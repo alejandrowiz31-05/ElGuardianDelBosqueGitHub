@@ -1779,6 +1779,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4688421368019052955, guid: 1f143d00d20452d499fef7e227706fca, type: 3}
   m_PrefabInstance: {fileID: 516221537}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &516747616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 516747617}
+  - component: {fileID: 516747618}
+  m_Layer: 0
+  m_Name: Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &516747617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516747616}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.05, y: 0.052019954, z: 0.21}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1791233889}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &516747618
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516747616}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 11.86, y: 2.02, z: 11}
+  m_Center: {x: -5.16, y: 0.95, z: -14.11}
 --- !u!1 &524202376
 GameObject:
   m_ObjectHideFlags: 0
@@ -2132,7 +2185,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "WASD para moverte\nShift para correr\nEspacio para saltar\nE para interactuar\r\n1
-    \u2014 Sacar la daga\r\n2 \u2014 Guardar la daga\r\n\r\n\r\n"
+    \u2014 Enfundar\r\n2 \u2014 Desenfundar\nAtacar- Raton izquierdo - derecho\r\n\r\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff8155a053a555641a767d177beed9e4, type: 2}
   m_sharedMaterial: {fileID: -8921808747555506973, guid: ff8155a053a555641a767d177beed9e4, type: 2}
@@ -4778,75 +4831,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7378d09444c7aa74dbb4b9b0908b982b, type: 3}
   m_PrefabInstance: {fileID: 1423573369}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1431435902
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1431435905}
-  - component: {fileID: 1431435904}
-  - component: {fileID: 1431435903}
-  m_Layer: 0
-  m_Name: UmbralTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1431435903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1431435902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c776331bb1f01e04292dcc28bfd9a888, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UmbralTrigger
-  ramasAlembic: {fileID: 0}
-  velocidadAbrir: 1
-  velocidadCerrar: 1
---- !u!65 &1431435904
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1431435902}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!4 &1431435905
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1431435902}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.3356956, z: -0, w: 0.9419705}
-  m_LocalPosition: {x: -22.14, y: 2.4, z: 8.4}
-  m_LocalScale: {x: 5.735561, y: 0.7828356, z: 19.336895}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -39.23, z: 0}
 --- !u!1 &1436749015
 GameObject:
   m_ObjectHideFlags: 0
@@ -5772,9 +5756,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1791233889}
+  - component: {fileID: 1791233890}
   m_Layer: 0
-  m_Name: RamasDelUmbral
-  m_TagString: Untagged
+  m_Name: RaicesDelUmbral
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5796,8 +5781,24 @@ Transform:
   - {fileID: 1423573370}
   - {fileID: 1276349383}
   - {fileID: 157491101}
+  - {fileID: 516747617}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1791233890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791233888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c776331bb1f01e04292dcc28bfd9a888, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UmbralTrigger
+  ramasAlembic: {fileID: 0}
+  velocidadAbrir: 1
+  velocidadCerrar: 1
 --- !u!1 &1834267887
 GameObject:
   m_ObjectHideFlags: 0
@@ -7075,7 +7076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 182677256810736935, guid: cd5eae97a160ed04d86205def14207ed, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 182677256810736939, guid: cd5eae97a160ed04d86205def14207ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7201,4 +7202,3 @@ SceneRoots:
   - {fileID: 1248176414}
   - {fileID: 1515079309}
   - {fileID: 1791233889}
-  - {fileID: 1431435905}
