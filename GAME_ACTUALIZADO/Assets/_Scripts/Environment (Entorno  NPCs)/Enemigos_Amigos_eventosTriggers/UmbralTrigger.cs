@@ -9,7 +9,7 @@ public class UmbralTrigger : MonoBehaviour
     // =========================
 
     public GameObject[] raices;   // Aquí van los 4 modelos de raíces
-    private bool jugadorCerca = false;         // Indica si el jugador está dentro del área de activación de las raíces
+    
 
 
     private void Start()
@@ -42,7 +42,6 @@ public class UmbralTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            jugadorCerca = true;
             CambiarRaices(true);
             Debug.Log("El Viajero ENTRÓ a la zona de las raíces");
         }
@@ -57,7 +56,6 @@ public class UmbralTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            jugadorCerca = false;
             CambiarRaices(false);
             Debug.Log("El Viajero SALIÓ de la zona de las raíces");
         }

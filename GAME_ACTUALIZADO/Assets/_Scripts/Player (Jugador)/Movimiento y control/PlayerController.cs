@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour
     // ESTADO DEL JUGADOR
     // =========================
     public bool isSprinting;
-    private bool isJumping;
     private float verticalVelocity;
 
     [Header("Movimiento cámara")]
@@ -130,12 +129,9 @@ public class PlayerController : MonoBehaviour
                 verticalVelocity = -2f;
             }
 
-            isJumping = false;
-
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 animator.SetTrigger("Jump");
-                isJumping = true;
                 verticalVelocity = Mathf.Sqrt(jumpForce * -2f * gravity);
             }
         }

@@ -20,7 +20,7 @@ public class AncianoTrigger : MonoBehaviour
 
     // Unity ejecuta esto SOLO cuando algo ENTRA a la zona del trigger.
     private void OnTriggerEnter(Collider other)
-    {
+    { 
         // Solo reaccionamos si lo que entró es el Viajero
         if (other.CompareTag("Player"))
         {
