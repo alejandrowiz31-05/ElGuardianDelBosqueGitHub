@@ -1,24 +1,62 @@
+
 using UnityEngine;
 
-public class ControlHints : MonoBehaviour // Este script muestra un mensaje de control al inicio del juego y lo desvanece después de un tiempo
+public class ControlHints : MonoBehaviour
 {
-    public CanvasGroup hintGroup; // El grupo de UI que contiene el mensaje de control
-    public float displayTime = 5f; // Cuánto tiempo se muestra el mensaje antes de empezar a desvanecerlo
-    private float timer; // Temporizador para controlar el tiempo que se muestra el mensaje
+    // =========================
+    // VARIABLES DE LA INTERFAZ
+    // =========================
 
-    void Start() // Al iniciar, se muestra el mensaje y se establece el temporizador
+    // Guarda el grupo de interfaz que muestra las indicaciones de los controles.
+    public CanvasGroup hintGroup;
+
+    // Indica cuántos segundos permanece visible el mensaje.
+    public float displayTime = 5f;
+
+
+    // =========================
+    // VARIABLES INTERNAS
+    // =========================
+
+    // Guarda el tiempo restante antes de ocultar el mensaje.
+    private float timer;
+
+
+    // =========================
+    // INICIO DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez cuando inicia el juego.
+    private void Start()
     {
-        timer = displayTime; // Establece el temporizador con el tiempo de visualización definido
-        hintGroup.alpha = 1f; // Asegura que el mensaje esté completamente visible al inicio
+        // Establece el tiempo inicial de visualización del mensaje.
+        timer = displayTime;
+
+        // Muestra completamente el mensaje al comenzar el juego.
+        hintGroup.alpha = 1f;
     }
 
-    void Update() // Cada frame, se cuenta el tiempo y se desvanece el mensaje si el tiempo se ha acabado
-    {
-        timer -= Time.deltaTime; // Resta el tiempo que ha pasado al temporizador
 
-        if (timer <= 0) // Si el tiempo se ha acabado, empieza a desvanecer el mensaje
+    // =========================
+    // ACTUALIZACIÓN DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez por cada fotograma del juego.
+    private void Update()
+    {
+        // Disminuye el tiempo restante según el tiempo transcurrido.
+        timer -= Time.deltaTime;
+
+        // Comprueba si terminó el tiempo de visualización del mensaje.
+        if (timer <= 0)
         {
-            hintGroup.alpha = Mathf.Lerp(hintGroup.alpha, 0f, Time.deltaTime * 2f); // Desvanece el mensaje suavemente hacia 0 (completamente transparente) a una velocidad de 2 unidades por segundo
+            // Reduce suavemente la transparencia hasta ocultar el mensaje.
+            hintGroup.alpha = Mathf.Lerp(
+                hintGroup.alpha,
+                0f,
+                Time.deltaTime * 2f
+            );
         }
     }
 }
+

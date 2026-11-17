@@ -1,19 +1,30 @@
-using UnityEngine;   // Permite usar las herramientas de Unity
 
-// El nombre de la clase debe ser igual al nombre del archivo
+using UnityEngine;
+
 public class DanioAlViajero : MonoBehaviour
 {
-    // Aquí arrastras el LivesPanel (el que tiene el script PanelVidas).
-    // El tipo es "PanelVidas": así este script puede llamar sus métodos.
+    // =========================
+    // VARIABLES
+    // =========================
+
+    // Guarda la referencia al panel que controla las vidas del Viajero.
     public PanelVidas panelVidas;
 
-    // Unity ejecuta esto SOLO cuando algo ENTRA a esta zona.
+
+    // =========================
+    // ENTRADA DEL JUGADOR
+    // =========================
+
+    // Se ejecuta cuando otro objeto entra en la zona de detección.
     private void OnTriggerEnter(Collider other)
     {
-        // Solo reaccionamos si lo que entró es el Viajero
+        // Comprueba que el objeto que entró sea el jugador.
         if (other.CompareTag("Player"))
         {
-            panelVidas.PerderVida();   // Llama al método que escribiste en PanelVidas
+            // Le indica al sistema de vidas que debe quitar un corazón.
+            panelVidas.PerderVida();
+
+            // Informa en la consola qué objeto le causó daño al Viajero.
             Debug.Log("El Viajero recibió daño de: " + gameObject.name);
         }
     }

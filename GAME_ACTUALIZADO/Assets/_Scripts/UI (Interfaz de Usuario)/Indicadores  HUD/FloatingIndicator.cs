@@ -1,78 +1,132 @@
+
 using UnityEngine;
 
-/// <summary>
-/// Indicador flotante que sigue a un objetivo y mira hacia la cámara (billboard).
-/// Optimizado para rendimiento: cacheo de componentes, validaciones robustas.
-/// </summary>
 public class FloatingIndicator : MonoBehaviour
 {
+    // =========================
+    // REFERENCIAS
+    // =========================
+
     [Header("Referencias")]
+
+    // Guarda la referencia al objeto que seguirá el indicador.
     [Tooltip("Objeto al que el indicador seguirá.")]
     public Transform target;
 
+
+    // =========================
+    // VARIABLES DE MOVIMIENTO
+    // =========================
+
     [Header("Movimiento")]
+
+    // Indica la distancia entre el indicador y el objeto que sigue.
     [Tooltip("Desplazamiento desde el objetivo.")]
     public Vector3 offset = new Vector3(0, 2, 0);
 
+    // Indica cuánto sube y baja el indicador durante la flotación.
     [Tooltip("Amplitud del movimiento de flotación.")]
     public float floatAmplitude = 0.2f;
 
+    // Indica la velocidad del movimiento de flotación.
     [Tooltip("Velocidad del movimiento de flotación.")]
     public float floatSpeed = 2f;
 
-    // Componentes cacheados
+
+    // =========================
+    // VARIABLES INTERNAS
+    // =========================
+
+    // Guarda la referencia a la cámara principal del juego.
     private Camera mainCamera;
+
+    // Guarda la referencia a la posición y orientación de la cámara.
     private Transform cameraTransform;
 
-    void Awake()
+
+    // =========================
+    // INICIALIZACIÓN
+    // =========================
+
+    // Se ejecuta una vez cuando se inicializa el objeto.
+    private void Awake()
     {
-        // Cachear referencias al inicializar (evita búsquedas repetidas)
+        // Busca y guarda la cámara principal del juego.
         mainCamera = Camera.main;
+
+        // Comprueba si se encontró una cámara principal.
         if (mainCamera == null)
         {
-            Debug.LogWarning($"FloatingIndicator en '{name}': cámara principal no encontrada. El indicador no rotará hacia la cámara.");
+            // Muestra una advertencia si no existe una cámara principal.
+            Debug.LogWarning(
+                $"FloatingIndicator en '{name}': cámara principal no encontrada. El indicador no rotará hacia la cámara."
+            );
+
+            // Desactiva el script si no se encuentra la cámara.
             enabled = false;
+
+            // Detiene el método para evitar errores.
             return;
         }
 
+        // Guarda la referencia al Transform de la cámara.
         cameraTransform = mainCamera.transform;
     }
 
-    void LateUpdate()
+
+    // =========================
+    // ACTUALIZACIÓN DEL INDICADOR
+    // =========================
+
+    // Se ejecuta al final de cada fotograma del juego.
+    private void LateUpdate()
     {
-        // Validar que el objetivo exista
+        // Comprueba que exista el objeto que debe seguir el indicador.
         if (target == null)
         {
+            // Detiene el método si no hay un objetivo asignado.
             return;
         }
 
-        // Calcular posición base con desplazamiento
+        // Calcula la posición del indicador respecto al objeto que sigue.
         Vector3 basePosition = target.position + offset;
 
-        // Aplicar flotación suave mediante función seno
+        // Calcula el movimiento vertical de flotación.
         float floatY = Mathf.Sin(Time.time * floatSpeed) * floatAmplitude;
+
+        // Añade el movimiento de flotación a la posición calculada.
         Vector3 finalPosition = basePosition + new Vector3(0, floatY, 0);
 
-        // Actualizar posición del indicador
+        // Actualiza la posición del indicador.
         transform.position = finalPosition;
 
-        // Billboard: rotación solo en eje Y hacia la cámara (evita inclinaciones)
+        // Orienta el indicador hacia la cámara del jugador.
         RotateTowardCamera();
     }
 
-    /// <summary>
-    /// Rota el indicador para mirar hacia la cámara, solo sobre el eje Y.
-    /// </summary>
+
+    // =========================
+    // ORIENTACIÓN HACIA LA CÁMARA
+    // =========================
+
+    // Gira el indicador hacia la cámara utilizando solamente el eje Y.
     private void RotateTowardCamera()
     {
-        // Calcular dirección hacia la cámara
-        Vector3 directionToCamera = cameraTransform.position - transform.position;
-        directionToCamera.y = 0f; // Ignorar eje Y para evitar inclinación
+        // Calcula la dirección desde el indicador hacia la cámara.
+        Vector3 directionToCamera =
+            cameraTransform.position - transform.position;
 
-        // Validar que el vector no sea casi cero (evita errores en LookRotation)
+        // Evita que el indicador se incline hacia arriba o hacia abajo.
+        directionToCamera.y = 0f;
+
+        // Comprueba que exista una dirección válida para realizar el giro.
         if (directionToCamera.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(directionToCamera);
+            // Calcula la rotación necesaria para mirar hacia la cámara.
+            Quaternion targetRotation =
+                Quaternion.LookRotation(directionToCamera);
+
+            // Aplica la rotación calculada al indicador.
             transform.rotation = targetRotation;
         }
     }

@@ -1,128 +1,234 @@
+
 using UnityEngine;
- 
-// Un seguidor mágico que alterna entre seguir al jugador y husmear alrededor de él
+
 public class MagicFollower : MonoBehaviour
 {
+    // =========================
+    // VARIABLES DE SEGUIMIENTO
+    // =========================
+
     [Header("Configuración de Seguimiento")]
-    public Transform target;              // El jugador al que el seguidor seguirá
-    public float followSpeed = 2.0f;      // Velocidad de seguimiento
-    public float stopDistance = 2.5f;     // Qué tan cerca se queda del jugador antes de detenerse
-    public float floatingHeight = 1.8f;   // Altura a la que flota el seguidor sobre el jugador
- 
+
+    // Guarda la referencia al objeto que seguirá la Esfera Dorada.
+    public Transform target;
+
+    // Indica la velocidad con la que la esfera sigue al jugador.
+    public float followSpeed = 2.0f;
+
+    // Indica la distancia que la esfera mantiene respecto al jugador.
+    public float stopDistance = 2.5f;
+
+    // Indica la altura a la que flota la esfera respecto al jugador.
+    public float floatingHeight = 1.8f;
+
+
+    // =========================
+    // VARIABLES DE EXPLORACIÓN
+    // =========================
+
     [Header("Comportamiento Curioso (Vida)")]
-    public float curioRadius = 5.0f;      // Radio dentro del cual el seguidor elige un punto aleatorio para husmear
-    public float changeInterval = 7.0f;   // Intervalo de tiempo para alternar entre seguir y husmear (en segundos)
- 
-    // Variables intermedias que varios métodos necesitan compartir en el mismo frame
-    private Vector3 targetPos;    // Posición objetivo actual a la que el seguidor se moverá
-    private Vector3 curioPos;     // Posición aleatoria para husmear alrededor del jugador
-    private bool isCurious = false; // Estado actual: si está husmeando (true) o siguiendo (false)
-    private float timer;          // Temporizador para controlar el cambio de estado
- 
- 
+
+    // Indica el radio en el que la esfera puede elegir un punto para explorar.
+    public float curioRadius = 5.0f;
+
+    // Indica cuántos segundos permanece siguiendo antes de cambiar de estado.
+    public float changeInterval = 7.0f;
+
+
     // =========================
-    // INICIO
+    // VARIABLES INTERNAS
     // =========================
-    void Start()
+
+    // Guarda la posición hacia la que debe moverse la esfera.
+    private Vector3 targetPos;
+
+    // Guarda la posición elegida para explorar alrededor del jugador.
+    private Vector3 curioPos;
+
+    // Indica si la esfera está explorando o siguiendo al jugador.
+    private bool isCurious = false;
+
+    // Guarda el tiempo restante antes de cambiar de estado.
+    private float timer;
+
+
+    // =========================
+    // INICIO DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez cuando inicia el juego.
+    private void Start()
     {
-        timer = changeInterval; // Comienza con el temporizador para alternar entre seguir y husmear
+        // Establece el tiempo inicial antes de cambiar de estado.
+        timer = changeInterval;
     }
- 
- 
+
+
     // =========================
-    // UPDATE — orquesta el frame llamando a cada método
+    // ACTUALIZACIÓN DEL JUEGO
     // =========================
-    void Update()
+
+    // Se ejecuta una vez por cada fotograma del juego.
+    private void Update()
     {
-        if (target == null) return; // Si no hay objetivo, no hacer nada
- 
+        // Comprueba que exista un objetivo antes de continuar.
+        if (target == null)
+        {
+            return;
+        }
+
+        // Actualiza el tiempo para cambiar entre seguir y explorar.
         ActualizarTemporizadorDeEstado();
+
+        // Calcula la posición hacia la que debe moverse la esfera.
         CalcularPosicionObjetivo();
+
+        // Mueve la esfera hacia la posición calculada.
         MoverHaciaPosicionObjetivo();
+
+        // Orienta la esfera hacia su objetivo de movimiento.
         OrientarHaciaObjetivo();
+
+        // Aplica un movimiento suave de flotación.
         AplicarFlotacionSuave();
     }
- 
- 
+
+
     // =========================
-    // MÉTODO: ActualizarTemporizadorDeEstado
-    // Cuenta el tiempo y alterna entre "seguir" y "husmear" cuando el temporizador llega a cero
+    // CAMBIO DE COMPORTAMIENTO
     // =========================
+
+    // Controla el tiempo para alternar entre seguir y explorar.
     private void ActualizarTemporizadorDeEstado()
     {
+        // Disminuye el tiempo restante según el tiempo transcurrido.
         timer -= Time.deltaTime;
- 
+
+        // Comprueba si terminó el tiempo del estado actual.
         if (timer <= 0)
         {
+            // Cambia entre el estado de exploración y el de seguimiento.
             isCurious = !isCurious;
-            // Si se vuelve curioso, el próximo cambio será más rápido (3s); si vuelve a seguir, más lento (changeInterval)
-            timer = isCurious ? 3.0f : changeInterval;
- 
+
+            // Establece un tiempo más corto cuando la esfera está explorando.
             if (isCurious)
             {
+                timer = 3.0f;
+            }
+            else
+            {
+                // Recupera el tiempo configurado cuando vuelve a seguir.
+                timer = changeInterval;
+            }
+
+            // Comprueba si la esfera debe elegir un punto para explorar.
+            if (isCurious)
+            {
+                // Selecciona una nueva posición alrededor del jugador.
                 ElegirPuntoDeHusmeo();
             }
         }
     }
- 
- 
+
+
     // =========================
-    // MÉTODO: ElegirPuntoDeHusmeo
-    // Genera un punto aleatorio alrededor del jugador para explorar cuando el estado es "curioso"
+    // ELECCIÓN DEL PUNTO DE EXPLORACIÓN
     // =========================
+
+    // Elige una posición aleatoria para explorar alrededor del jugador.
     private void ElegirPuntoDeHusmeo()
     {
+        // Genera un desplazamiento aleatorio dentro del radio configurado.
         Vector3 randomOffset = Random.insideUnitSphere * curioRadius;
+
+        // Calcula una posición de exploración alrededor del jugador.
         curioPos = target.position + randomOffset;
-        curioPos.y = target.position.y + floatingHeight + 1f; // un poco más alto que la altura de flotación normal
+
+        // Coloca el punto de exploración un poco más alto que la flotación normal.
+        curioPos.y = target.position.y + floatingHeight + 1f;
     }
- 
- 
+
+
     // =========================
-    // MÉTODO: CalcularPosicionObjetivo
-    // Decide hacia dónde debe moverse el seguidor según su estado actual (curioso o siguiendo)
+    // CÁLCULO DE LA POSICIÓN
     // =========================
+
+    // Calcula hacia dónde debe moverse la esfera según su estado.
     private void CalcularPosicionObjetivo()
     {
+        // Comprueba si la esfera se encuentra explorando.
         if (isCurious)
         {
+            // Utiliza la posición elegida para explorar.
             targetPos = curioPos;
         }
         else
         {
-            targetPos = target.position + (transform.position - target.position).normalized * stopDistance;
+            // Calcula una posición cercana al jugador respetando la distancia.
+            targetPos = target.position
+                + (transform.position - target.position).normalized * stopDistance;
+
+            // Ajusta la altura de seguimiento respecto al jugador.
             targetPos.y = target.position.y + floatingHeight;
         }
     }
- 
- 
+
+
     // =========================
-    // MÉTODO: MoverHaciaPosicionObjetivo
-    // Desplaza suavemente al seguidor hacia la posición calculada
+    // MOVIMIENTO DE LA ESFERA
     // =========================
+
+    // Mueve suavemente la esfera hacia la posición calculada.
     private void MoverHaciaPosicionObjetivo()
     {
-        float velocidadActual = isCurious ? 1.0f : followSpeed; // más lento al husmear, para un movimiento suave
-        transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * velocidadActual);
+        // Guarda la velocidad que utilizará la esfera.
+        float velocidadActual;
+
+        // Comprueba si la esfera se encuentra explorando.
+        if (isCurious)
+        {
+            // Utiliza una velocidad más lenta durante la exploración.
+            velocidadActual = 1.0f;
+        }
+        else
+        {
+            // Utiliza la velocidad configurada durante el seguimiento.
+            velocidadActual = followSpeed;
+        }
+
+        // Desplaza suavemente la esfera hacia su posición objetivo.
+        transform.position = Vector3.Lerp(
+            transform.position,
+            targetPos,
+            Time.deltaTime * velocidadActual
+        );
     }
- 
- 
+
+
     // =========================
-    // MÉTODO: OrientarHaciaObjetivo
-    // Hace que el seguidor mire hacia donde se está moviendo
+    // ORIENTACIÓN DE LA ESFERA
     // =========================
+
+    // Orienta la esfera hacia la dirección de su movimiento.
     private void OrientarHaciaObjetivo()
     {
+        // Gira la esfera hacia el punto calculado delante de su orientación.
         transform.LookAt(targetPos + transform.forward);
     }
- 
- 
+
+
     // =========================
-    // MÉTODO: AplicarFlotacionSuave
-    // Agrega un ligero vaivén vertical para que el seguidor se sienta "vivo"
+    // FLOTACIÓN DE LA ESFERA
     // =========================
+
+    // Aplica un movimiento vertical suave para simular flotación.
     private void AplicarFlotacionSuave()
     {
-        transform.position += new Vector3(0, Mathf.Sin(Time.time) * 0.2f * Time.deltaTime, 0);
+        // Añade un pequeño desplazamiento vertical basado en el tiempo.
+        transform.position += new Vector3(
+            0,
+            Mathf.Sin(Time.time) * 0.2f * Time.deltaTime,
+            0
+        );
     }
 }

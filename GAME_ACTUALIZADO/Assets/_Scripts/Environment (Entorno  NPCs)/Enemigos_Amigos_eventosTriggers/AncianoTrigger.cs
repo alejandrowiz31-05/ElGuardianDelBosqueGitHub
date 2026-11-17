@@ -1,39 +1,67 @@
-using UnityEngine;   // Permite usar las herramientas de Unity
 
-// El nombre de la clase debe ser igual al nombre del archivo
+using UnityEngine;
+
 public class AncianoTrigger : MonoBehaviour
 {
-    // El Anciano que va a aparecer y desaparecer.
-    // "public" hace que aparezca en el Inspector para arrastrarlo ahí.
+    // =========================
+    // VARIABLES
+    // =========================
+
+    // Guarda el objeto del Anciano que se va a mostrar y ocultar.
     public GameObject anciano;
 
-    // Cuántos segundos se queda visible antes de desaparecer.
-    // También se puede cambiar desde el Inspector.
+    // Indica cuántos segundos permanecerá visible el Anciano.
     public float tiempoVisible = 3f;
 
-    // Start se ejecuta UNA sola vez, cuando das Play.
+
+    // =========================
+    // INICIO DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez cuando inicia el juego.
     private void Start()
     {
-        anciano.SetActive(false);   // Empieza oculto
+        // Oculta al Anciano para que no aparezca al comenzar el juego.
+        anciano.SetActive(false);
+
+        // Informa en la consola que el script está activo.
         Debug.Log("AncianoTrigger activo en: " + gameObject.name);
     }
 
-    // Unity ejecuta esto SOLO cuando algo ENTRA a la zona del trigger.
+
+    // =========================
+    // ENTRADA DEL JUGADOR
+    // =========================
+
+    // Se ejecuta cuando otro objeto entra en la zona de detección.
     private void OnTriggerEnter(Collider other)
-    { 
-        // Solo reaccionamos si lo que entró es el Viajero
+    {
+        // Comprueba que el objeto que entró sea el jugador.
         if (other.CompareTag("Player"))
         {
-            anciano.SetActive(true);                      // El Anciano aparece
-            Invoke("OcultarAnciano", tiempoVisible);      // Programa: "en X segundos, ejecuta OcultarAnciano"
+            // Muestra al Anciano cuando el Viajero entra en la zona.
+            anciano.SetActive(true);
+
+            // Programa la desaparición del Anciano después del tiempo indicado.
+            Invoke("OcultarAnciano", tiempoVisible);
+
+            // Informa en la consola que el Anciano apareció.
             Debug.Log("El Anciano apareció");
         }
     }
 
-    // Este método lo inventamos nosotros. Solo apaga al Anciano.
+
+    // =========================
+    // DESAPARICIÓN DEL ANCIANO
+    // =========================
+
+    // Oculta al Anciano cuando termina el tiempo programado.
     private void OcultarAnciano()
     {
-        anciano.SetActive(false);   // El Anciano desaparece
+        // Oculta al Anciano del escenario.
+        anciano.SetActive(false);
+
+        // Informa en la consola que el Anciano desapareció.
         Debug.Log("El Anciano desapareció");
     }
 }

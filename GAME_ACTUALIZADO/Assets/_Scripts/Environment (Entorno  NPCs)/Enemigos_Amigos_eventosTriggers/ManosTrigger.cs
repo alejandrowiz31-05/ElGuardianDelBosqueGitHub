@@ -1,47 +1,77 @@
-using UnityEngine;   // Permite usar las herramientas de Unity
 
-// El nombre de la clase debe ser igual al nombre del archivo
+using UnityEngine;
+
 public class ManosTrigger : MonoBehaviour
 {
-    // La lista de manos que este charco va a encender y apagar.
-    // "public" hace que aparezca en el Inspector para arrastrar las manos ahí.
+    // =========================
+    // VARIABLES
+    // =========================
+
+    // Guarda las manos que se van a mostrar u ocultar durante el juego.
     public GameObject[] manos;
 
-    // Start se ejecuta UNA sola vez, cuando das Play.
+
+    // =========================
+    // INICIO DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez cuando inicia el juego.
     private void Start()
     {
-        CambiarManos(false);   // Empieza con las manos apagadas (invisibles)
+        // Oculta las manos para que no aparezcan al comenzar el juego.
+        CambiarManos(false);
     }
 
-    // Este método enciende o apaga TODAS las manos de la lista.
-    // "encendidas" es un sí (true) o un no (false) que tú le pasas.
+
+    // =========================
+    // MOSTRAR Y OCULTAR MANOS
+    // =========================
+
+    // Activa o desactiva todas las manos según el valor recibido.
     private void CambiarManos(bool encendidas)
     {
-        // foreach = "para cada mano de la lista, haz lo siguiente"
+        // Recorre una por una las manos guardadas en la lista.
         foreach (GameObject mano in manos)
         {
-            mano.SetActive(encendidas);   // true = aparece, false = desaparece
+            // Muestra la mano si recibe true y la oculta si recibe false.
+            mano.SetActive(encendidas);
         }
     }
 
-    // Unity ejecuta esto SOLO cuando algo ENTRA a la zona del trigger.
-    // "other" es lo que entró.
+
+    // =========================
+    // ENTRADA DEL JUGADOR
+    // =========================
+
+    // Se ejecuta cuando otro objeto entra en la zona de detección.
     private void OnTriggerEnter(Collider other)
     {
-        // Solo reaccionamos si lo que entró tiene la etiqueta "Player" (el Viajero)
+        // Comprueba que el objeto que entró sea el jugador.
         if (other.CompareTag("Player"))
         {
-            CambiarManos(true);   // Las manos aparecen
+            // Muestra las manos cuando el Viajero entra en la zona.
+            CambiarManos(true);
+
+            // Informa en la consola que el Viajero se acercó al charco.
             Debug.Log("El Viajero se acercó al charco");
         }
     }
 
-    // Unity ejecuta esto SOLO cuando algo SALE de la zona del trigger.
+
+    // =========================
+    // SALIDA DEL JUGADOR
+    // =========================
+
+    // Se ejecuta cuando otro objeto sale de la zona de detección.
     private void OnTriggerExit(Collider other)
     {
+        // Comprueba que el objeto que salió sea el jugador.
         if (other.CompareTag("Player"))
         {
-            CambiarManos(false);   // Las manos desaparecen
+            // Oculta las manos cuando el Viajero sale de la zona.
+            CambiarManos(false);
+
+            // Informa en la consola que el Viajero se alejó del charco.
             Debug.Log("El Viajero se alejó del charco");
         }
     }

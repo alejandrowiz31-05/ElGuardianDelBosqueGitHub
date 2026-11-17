@@ -1,54 +1,75 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StaminaBar : MonoBehaviour
 {
-    // =====================================================
-    // VARIABLES PÚBLICAS
-    // =====================================================
+    // =========================
+    // VARIABLES DE LA RESISTENCIA
+    // =========================
 
-    public Image fillImage;             // Imagen de la barra
-    public float maxStamina = 1f;       // Stamina máxima
-    public float currentStamina = 1f;   // Stamina actual
-    public float drainSpeed = 0.3f;     // Velocidad al gastar stamina
-    public float recoverSpeed = 0.2f;   // Velocidad al recuperar stamina
+    // Guarda la imagen que representa la barra de resistencia.
+    public Image fillImage;
+
+    // Indica la cantidad máxima de resistencia del jugador.
+    public float maxStamina = 1f;
+
+    // Guarda la cantidad actual de resistencia del jugador.
+    public float currentStamina = 1f;
+
+    // Indica la velocidad con la que se consume la resistencia.
+    public float drainSpeed = 0.3f;
+
+    // Indica la velocidad con la que se recupera la resistencia.
+    public float recoverSpeed = 0.2f;
 
 
-    // =====================================================
-    // UPDATE
-    // =====================================================
+    // =========================
+    // ACTUALIZACIÓN DEL JUEGO
+    // =========================
 
+    // Se ejecuta una vez por cada fotograma del juego.
     private void Update()
     {
-        // Actualizar visualmente la barra
+        // Actualiza el nivel visible de la barra según la resistencia actual.
         fillImage.fillAmount = currentStamina / maxStamina;
     }
 
 
-    // =====================================================
-    // GASTAR STAMINA
-    // =====================================================
+    // =========================
+    // CONSUMO DE RESISTENCIA
+    // =========================
 
+    // Disminuye la resistencia del jugador según la cantidad recibida.
     public void UseStamina(float amount)
     {
-        // Restar stamina
+        // Resta resistencia utilizando la velocidad de consumo.
         currentStamina -= amount * drainSpeed;
 
-        // Evitar que baje de 0
-        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+        // Mantiene la resistencia entre cero y el valor máximo.
+        currentStamina = Mathf.Clamp(
+            currentStamina,
+            0f,
+            maxStamina
+        );
     }
 
 
-    // =====================================================
-    // RECUPERAR STAMINA
-    // =====================================================
+    // =========================
+    // RECUPERACIÓN DE RESISTENCIA
+    // =========================
 
+    // Aumenta la resistencia del jugador según la cantidad recibida.
     public void RecoverStamina(float amount)
     {
-        // Recuperar stamina
+        // Suma resistencia utilizando la velocidad de recuperación.
         currentStamina += amount * recoverSpeed;
 
-        // Evitar que supere el máximo
-        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+        // Mantiene la resistencia entre cero y el valor máximo.
+        currentStamina = Mathf.Clamp(
+            currentStamina,
+            0f,
+            maxStamina
+        );
     }
 }

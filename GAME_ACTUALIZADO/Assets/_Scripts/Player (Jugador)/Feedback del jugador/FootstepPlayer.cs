@@ -1,85 +1,166 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
 public class FootstepPlayer : MonoBehaviour
 {
-    // Tipos de superficie que podemos reconocer
+    // =========================
+    // TIPOS DE SUPERFICIE
+    // =========================
+
+    // Define los tipos de superficie que puede reconocer el sistema.
     public enum SurfaceType
     {
-        Road,  // Camino
-        Grass  // Césped
+        Road,   // Camino.
+        Grass   // Césped.
     }
 
+
+    // =========================
+    // VARIABLES DE SONIDO
+    // =========================
+
     [Header("Sonidos por superficie")]
-    public AudioClip[] roadClips;   // Sonidos para camino
-    public AudioClip[] grassClips;  // Sonidos para césped
+
+    // Guarda los sonidos de pasos que se utilizan sobre el camino.
+    public AudioClip[] roadClips;
+
+    // Guarda los sonidos de pasos que se utilizan sobre el césped.
+    public AudioClip[] grassClips;
+
+
+    // =========================
+    // VARIABLES DE CONFIGURACIÓN
+    // =========================
 
     [Header("Ajustes de pasos")]
-    public AudioSource audioSource; // Componente que reproduce sonidos
 
-    public PlayerController playerController; // (Opcional) referencia al controlador del jugador
-    public float stepInterval = 0.5f; // Tiempo entre pasos en segundos
+    // Guarda el componente encargado de reproducir los sonidos.
+    public AudioSource audioSource;
 
-    // Variables internas
-    private float stepTimer = 0f;       // Cuenta el tiempo hasta el siguiente paso
-    private bool isMoving = false;      // ¿El jugador se está moviendo?
-    private AudioClip[] currentClips;   // Array de sonidos que se usan ahora
+    // Guarda una referencia opcional al controlador del jugador.
+    public PlayerController playerController;
 
-    void Start()
+    // Indica cuántos segundos deben pasar entre un sonido de paso y otro.
+    public float stepInterval = 0.5f;
+
+
+    // =========================
+    // VARIABLES INTERNAS
+    // =========================
+
+    // Guarda el tiempo transcurrido desde el último paso.
+    private float stepTimer = 0f;
+
+    // Indica si el jugador se encuentra en movimiento.
+    private bool isMoving = false;
+
+    // Guarda los sonidos correspondientes a la superficie actual.
+    private AudioClip[] currentClips;
+
+
+    // =========================
+    // INICIO DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez cuando inicia el juego.
+    private void Start()
     {
-        // Al iniciar, asumimos que el jugador está sobre césped
+        // Establece el césped como superficie inicial.
         SetSurface(SurfaceType.Grass);
     }
 
-    void Update()
+
+    // =========================
+    // ACTUALIZACIÓN DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez por cada fotograma del juego.
+    private void Update()
     {
-        // Si el jugador se está moviendo, avanzamos el temporizador
+        // Comprueba si el jugador se encuentra en movimiento.
         if (isMoving)
         {
-            stepTimer += Time.deltaTime; // Time.deltaTime = tiempo que pasó desde el último frame
+            // Aumenta el temporizador según el tiempo transcurrido.
+            stepTimer += Time.deltaTime;
 
-            // Cuando el temporizador llega al intervalo, reproducimos un paso
+            // Comprueba si llegó el momento de reproducir otro paso.
             if (stepTimer >= stepInterval)
             {
-                PlayFootstep();   // Reproducir sonido de paso
-                stepTimer = 0f;   // Reiniciar el temporizador
+                // Reproduce un sonido de paso.
+                PlayFootstep();
+
+                // Reinicia el temporizador para contar el siguiente paso.
+                stepTimer = 0f;
             }
         }
     }
 
-    // Este método lo llamas desde PlayerController para decir si el jugador se mueve
+
+    // =========================
+    // ESTADO DEL MOVIMIENTO
+    // =========================
+
+    // Recibe desde PlayerController si el jugador está en movimiento.
     public void SetMoving(bool moving)
     {
+        // Actualiza el estado de movimiento del jugador.
         isMoving = moving;
+
+        // Comprueba si el jugador dejó de moverse.
         if (!moving)
-            stepTimer = 0f; // Si se detiene, reiniciamos el temporizador para no acumular pasos
+        {
+            // Reinicia el temporizador para evitar acumular pasos.
+            stepTimer = 0f;
+        }
     }
 
-    // Cambia qué sonidos usar según la superficie usando if / else
+
+    // =========================
+    // CAMBIO DE SUPERFICIE
+    // =========================
+
+    // Selecciona los sonidos correspondientes al tipo de superficie.
     public void SetSurface(SurfaceType surface)
     {
+        // Comprueba si la superficie seleccionada es un camino.
         if (surface == SurfaceType.Road)
         {
-            currentClips = roadClips; // Si está en camino, usar roadClips
+            // Utiliza los sonidos de pasos sobre el camino.
+            currentClips = roadClips;
         }
+        // Comprueba si la superficie seleccionada es césped.
         else if (surface == SurfaceType.Grass)
         {
-            currentClips = grassClips; // Si está en césped, usar grassClips
+            // Utiliza los sonidos de pasos sobre el césped.
+            currentClips = grassClips;
         }
         else
         {
-            currentClips = null; // Seguridad: si llega algo raro, no hay clips
+            // Evita utilizar sonidos si la superficie no es reconocida.
+            currentClips = null;
         }
     }
 
-    // Reproduce un sonido aleatorio del array actual
-    void PlayFootstep()
-    {
-        // Si no hay clips asignados, no hacer nada
-        if (currentClips == null || currentClips.Length == 0)
-            return;
 
-        // Elegir un índice aleatorio y reproducir ese clip una vez
+    // =========================
+    // REPRODUCCIÓN DE PASOS
+    // =========================
+
+    // Reproduce un sonido aleatorio de la superficie seleccionada.
+    private void PlayFootstep()
+    {
+        // Comprueba que existan sonidos disponibles para reproducir.
+        if (currentClips == null || currentClips.Length == 0)
+        {
+            // Detiene el método si no hay sonidos disponibles.
+            return;
+        }
+
+        // Selecciona una posición aleatoria dentro de la lista de sonidos.
         int index = Random.Range(0, currentClips.Length);
+
+        // Reproduce una vez el sonido seleccionado.
         audioSource.PlayOneShot(currentClips[index]);
     }
 }
+

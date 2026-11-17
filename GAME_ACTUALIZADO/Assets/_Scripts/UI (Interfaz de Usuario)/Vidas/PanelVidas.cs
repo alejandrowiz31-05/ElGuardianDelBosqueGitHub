@@ -1,37 +1,60 @@
-using UnityEngine;   // Permite usar las herramientas de Unity
+using UnityEngine;
 
-// El nombre de la clase debe ser igual al nombre del archivo
 public class PanelVidas : MonoBehaviour
 {
-    // La lista con los 3 íconos de vida (Life_1, Life_2, Life_3).
+    // =========================
+    // VARIABLES
+    // =========================
+
+    // Guarda los corazones que representan las vidas del Viajero.
     public GameObject[] vidas;
 
-    // Cuántas vidas le quedan al Viajero. "int" es un número entero.
+    // Guarda la cantidad de vidas que le quedan al Viajero.
     private int vidasActuales;
 
-    // Start se ejecuta UNA vez, al dar Play.
+
+    // =========================
+    // INICIO DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez cuando inicia el juego.
     private void Start()
     {
-        vidasActuales = vidas.Length;   // Length = cuántos elementos tiene la lista (3)
+        // Cuenta los corazones de la lista para establecer las vidas iniciales.
+        vidasActuales = vidas.Length;
+
+        // Informa en la consola cuántas vidas tiene el Viajero al comenzar.
         Debug.Log("Vidas al iniciar: " + vidasActuales);
     }
 
-    // Este método quita UNA vida. Lo vamos a llamar cuando el Viajero reciba daño.
-    // "public" permite que otros scripts lo llamen.
+
+    // =========================
+    // PÉRDIDA DE VIDAS
+    // =========================
+
+    // Quita una vida cuando otro script llama a este método.
     public void PerderVida()
     {
-        // Si ya no quedan vidas, no hacemos nada
+        // Comprueba si el Viajero ya se quedó sin vidas.
         if (vidasActuales <= 0)
         {
-            return;   // return = "sal del método ya"
+            // Sale del método para evitar que las vidas sigan disminuyendo.
+            return;
         }
 
-        vidasActuales = vidasActuales - 1;      // Resta una vida
-        vidas[vidasActuales].SetActive(false);  // Apaga el ícono correspondiente
+        // Resta una vida de la cantidad actual.
+        vidasActuales = vidasActuales - 1;
+
+        // Oculta el corazón correspondiente a la vida que se perdió.
+        vidas[vidasActuales].SetActive(false);
+
+        // Informa en la consola cuántas vidas le quedan al Viajero.
         Debug.Log("Vidas restantes: " + vidasActuales);
 
+        // Comprueba si el Viajero perdió su última vida.
         if (vidasActuales == 0)
         {
+            // Informa en la consola que el Viajero se quedó sin vidas.
             Debug.Log("El Viajero se quedó sin vidas");
         }
     }

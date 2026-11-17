@@ -1,56 +1,109 @@
+
 using UnityEngine;
 
 public class TerrainSurfaceDetector : MonoBehaviour
 {
-    public Terrain terrain;               // Referencia al Terrain de la escena
-    public FootstepPlayer footstep;       // Script que reproduce sonidos de pasos
+    // =========================
+    // REFERENCIAS DEL TERRENO
+    // =========================
 
-    public int roadIndex = 0;             // Índice de la capa de textura para "camino"
-    public int grassIndex = 1;            // Índice de la capa de textura para "césped"
+    // Guarda la referencia al terreno de la escena.
+    public Terrain terrain;
 
-    public float rayDistance = 1.5f;      // Distancia del rayo hacia abajo
+    // Guarda la referencia al script que reproduce los sonidos de pasos.
+    public FootstepPlayer footstep;
 
-    void Update()
+
+    // =========================
+    // CONFIGURACIÓN DE SUPERFICIES
+    // =========================
+
+    // Indica el índice de la textura que representa el camino.
+    public int roadIndex = 0;
+
+    // Indica el índice de la textura que representa el césped.
+    public int grassIndex = 1;
+
+    // Indica la distancia máxima para detectar el suelo.
+    public float rayDistance = 1.5f;
+
+
+    // =========================
+    // ACTUALIZACIÓN DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez por cada fotograma del juego.
+    private void Update()
     {
-        DetectSurface();                  // Llamar cada frame para detectar la superficie bajo el objeto
+        // Comprueba qué superficie se encuentra debajo del personaje.
+        DetectSurface();
     }
 
-    void DetectSurface()
+
+    // =========================
+    // DETECCIÓN DE LA SUPERFICIE
+    // =========================
+
+    // Detecta la textura del terreno que se encuentra bajo el personaje.
+    private void DetectSurface()
     {
-        // Crear un rayo que parte un poco arriba de la posición del objeto y va hacia abajo
-        Ray ray = new Ray(transform.position + Vector3.up * 0.2f, Vector3.down);
+        // Crea un rayo que comienza un poco arriba del personaje y apunta hacia abajo.
+        Ray ray = new Ray(
+            transform.position + Vector3.up * 0.2f,
+            Vector3.down
+        );
+
+        // Guarda la información del punto donde se detecta el suelo.
         RaycastHit hit;
 
-        // Si el rayo golpea algo dentro de rayDistance
+        // Comprueba si el rayo detecta una superficie dentro de la distancia indicada.
         if (Physics.Raycast(ray, out hit, rayDistance))
         {
-            // Comprobar si el collider pertenece a un Terrain
+            // Comprueba si la superficie detectada pertenece a un Terrain.
             if (hit.collider.GetComponent<Terrain>() != null)
             {
-                // Convertir la posición del punto de impacto a coordenadas locales del terrain
+                // Calcula la posición del impacto respecto al terreno.
                 Vector3 terrainPos = hit.point - terrain.transform.position;
 
-                // Calcular la posición en el mapa de splat (alphamap)
-                int mapX = (int)((terrainPos.x / terrain.terrainData.size.x) * terrain.terrainData.alphamapWidth);
-                int mapZ = (int)((terrainPos.z / terrain.terrainData.size.z) * terrain.terrainData.alphamapHeight);
+                // Calcula la posición horizontal dentro del mapa de texturas.
+                int mapX = (int)(
+                    (terrainPos.x / terrain.terrainData.size.x)
+                    * terrain.terrainData.alphamapWidth
+                );
 
-                // Obtener los valores de mezcla de texturas en ese punto (1x1)
-                float[,,] splat = terrain.terrainData.GetAlphamaps(mapX, mapZ, 1, 1);
+                // Calcula la posición vertical dentro del mapa de texturas.
+                int mapZ = (int)(
+                    (terrainPos.z / terrain.terrainData.size.z)
+                    * terrain.terrainData.alphamapHeight
+                );
 
-                // Leer la influencia de cada capa (road y grass)
+                // Obtiene la información de las texturas en el punto detectado.
+                float[,,] splat = terrain.terrainData.GetAlphamaps(
+                    mapX,
+                    mapZ,
+                    1,
+                    1
+                );
+
+                // Obtiene la influencia de la textura del camino.
                 float road = splat[0, 0, roadIndex];
+
+                // Obtiene la influencia de la textura del césped.
                 float grass = splat[0, 0, grassIndex];
 
-                // Comparar cuál textura tiene más peso y asignar el tipo de superficie
+                // Comprueba si la textura del camino tiene mayor influencia.
                 if (road > grass)
                 {
+                    // Selecciona los sonidos de pasos sobre el camino.
                     footstep.SetSurface(FootstepPlayer.SurfaceType.Road);
                 }
                 else
                 {
+                    // Selecciona los sonidos de pasos sobre el césped.
                     footstep.SetSurface(FootstepPlayer.SurfaceType.Grass);
                 }
             }
         }
     }
 }
+

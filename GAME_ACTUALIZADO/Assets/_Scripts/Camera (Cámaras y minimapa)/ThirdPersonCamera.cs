@@ -1,46 +1,103 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
-    public Transform target;            // El jugador
-    public float distance = 4f;         // Qué tan lejos está la cámara
-    public float height = 2f;           // Altura del pivot
-    public float sensibilidad = 2f;     // Sensibilidad del mouse
+    // =========================
+    // REFERENCIAS
+    // =========================
 
-    private float rotationX = 0f;       // Rotación vertical
-    private float rotationY = 0f;       // Rotación horizontal
+    // Guarda la referencia al personaje que seguirá la cámara.
+    public Transform target;
 
-    void Start()
+
+    // =========================
+    // VARIABLES DE LA CÁMARA
+    // =========================
+
+    // Indica la distancia entre la cámara y el punto de seguimiento.
+    public float distance = 4f;
+
+    // Indica la altura del punto de seguimiento respecto al personaje.
+    public float height = 2f;
+
+    // Indica la sensibilidad del movimiento del mouse.
+    public float sensibilidad = 2f;
+
+
+    // =========================
+    // VARIABLES INTERNAS
+    // =========================
+
+    // Guarda la rotación vertical de la cámara.
+    private float rotationX = 0f;
+
+    // Guarda la rotación horizontal de la cámara.
+    private float rotationY = 0f;
+
+
+    // =========================
+    // INICIO DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez cuando inicia el juego.
+    private void Start()
     {
-        // Guardar rotación inicial del pivot
+        // Guarda la rotación horizontal inicial del punto de seguimiento.
         rotationY = transform.eulerAngles.y;
+
+        // Guarda la rotación vertical inicial del punto de seguimiento.
         rotationX = transform.eulerAngles.x;
     }
 
-    void LateUpdate()
-    {
-        if (target == null) return;
 
-        // 1. Obtener entrada de la cámara
+    // =========================
+    // ACTUALIZACIÓN DE LA CÁMARA
+    // =========================
+
+    // Se ejecuta al final de cada fotograma del juego.
+    private void LateUpdate()
+    {
+        // Comprueba si existe el personaje que debe seguir la cámara.
+        if (target == null)
+        {
+            // Detiene el método si no hay un personaje asignado.
+            return;
+        }
+
+        // Obtiene el movimiento horizontal del mouse.
         float mouseX = Input.GetAxis("Mouse X") * sensibilidad;
+
+        // Obtiene el movimiento vertical del mouse.
         float mouseY = Input.GetAxis("Mouse Y") * sensibilidad;
 
-        // 2. Acumular esos movimientos en mis dos variables de rotación
-        rotationX -= mouseY;                          // arriba/abajo
-        rotationX = Mathf.Clamp(rotationX, -60f, 60f); // limitar para no dar la vuelta completa
-        rotationY += mouseX;                          // izquierda/derecha (gira libre)
+        // Actualiza la rotación vertical según el movimiento del mouse.
+        rotationX -= mouseY;
 
-        // 3. Posicionar este objeto (el "pivot") a la altura de la cabeza del jugador
+        // Limita la rotación vertical para evitar que la cámara dé una vuelta completa.
+        rotationX = Mathf.Clamp(rotationX, -60f, 60f);
+
+        // Actualiza la rotación horizontal según el movimiento del mouse.
+        rotationY += mouseX;
+
+        // Coloca el punto de seguimiento a la altura indicada sobre el personaje.
         transform.position = target.position + Vector3.up * height;
 
-        // 4. Aplicar la rotación completa (horizontal + vertical) al pivot
-        transform.rotation = Quaternion.Euler(rotationX, rotationY, 0f);
+        // Aplica la rotación vertical y horizontal al punto de seguimiento.
+        transform.rotation = Quaternion.Euler(
+            rotationX,
+            rotationY,
+            0f
+        );
 
-        // 5. Poner la cámara detrás del pivot, a la distancia indicada
-        Camera.main.transform.position = transform.position - transform.forward * distance;
+        // Coloca la cámara principal detrás del punto de seguimiento.
+        Camera.main.transform.position =
+            transform.position - transform.forward * distance;
 
-        // 6. Hacer que la cámara siempre mire hacia el jugador
-        Camera.main.transform.LookAt(target.position + Vector3.up * height);
+        // Orienta la cámara principal hacia el punto de seguimiento del personaje.
+        Camera.main.transform.LookAt(
+            target.position + Vector3.up * height
+        );
     }
 }
 

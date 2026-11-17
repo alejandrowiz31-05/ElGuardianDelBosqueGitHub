@@ -1,51 +1,112 @@
+
 using UnityEngine;
 
-public class FootstepDust : MonoBehaviour // Un script para generar polvo al pisar el suelo con los pies, usando raycasts para detectar el contacto con el suelo
+public class FootstepDust : MonoBehaviour
 {
-    public Transform footL; // Referencia al pie izquierdo
-    public Transform footR; // Referencia al pie derecho
-    public GameObject dustPrefab; // Prefab del efecto de polvo que se instanciará al pisar el suelo
-    public LayerMask groundLayer; // Capa que representa el suelo, para que el raycast solo detecte colisiones con el suelo
+    // =========================
+    // VARIABLES DE LOS PIES
+    // =========================
 
-    private bool leftFootDown = false; // Estado del pie izquierdo (si está tocando el suelo o no)
-    private bool rightFootDown = false; // Estado del pie derecho (si está tocando el suelo o no)
-    
-    // --- NUEVA VARIABLE PARA CONTROLAR EL TIEMPO ---
-    public float destroyTime = 2f; // Tiempo en segundos después del cual el efecto de polvo se destruirá automáticamente
+    // Guarda la referencia al pie izquierdo del personaje.
+    public Transform footL;
 
-    void Update() // En cada frame, verificamos el estado de ambos pies para generar el efecto de polvo cuando toquen el suelo
+    // Guarda la referencia al pie derecho del personaje.
+    public Transform footR;
+
+
+    // =========================
+    // VARIABLES DEL EFECTO
+    // =========================
+
+    // Guarda el prefab del polvo que aparece cuando un pie toca el suelo.
+    public GameObject dustPrefab;
+
+    // Indica qué capa de Unity se considera suelo.
+    public LayerMask groundLayer;
+
+    // Indica cuántos segundos permanece el efecto antes de destruirse.
+    public float destroyTime = 2f;
+
+
+    // =========================
+    // VARIABLES INTERNAS
+    // =========================
+
+    // Indica si el pie izquierdo estaba tocando el suelo.
+    private bool leftFootDown = false;
+
+    // Indica si el pie derecho estaba tocando el suelo.
+    private bool rightFootDown = false;
+
+
+    // =========================
+    // ACTUALIZACIÓN DEL JUEGO
+    // =========================
+
+    // Se ejecuta una vez por cada fotograma del juego.
+    private void Update()
     {
-        CheckFoot(footL, ref leftFootDown); // Verificar el pie izquierdo
-        CheckFoot(footR, ref rightFootDown); // Verificar el pie derecho
+        // Comprueba si el pie izquierdo está tocando el suelo.
+        CheckFoot(footL, ref leftFootDown);
+
+        // Comprueba si el pie derecho está tocando el suelo.
+        CheckFoot(footR, ref rightFootDown);
     }
 
-    void CheckFoot(Transform foot, ref bool footState) // Método para verificar si un pie está tocando el suelo usando un raycast, y generar el efecto de polvo si es así
+
+    // =========================
+    // DETECCIÓN DEL SUELO
+    // =========================
+
+    // Comprueba si un pie toca el suelo y genera polvo al entrar en contacto.
+    private void CheckFoot(Transform foot, ref bool footState)
     {
-        if (foot == null) return; // Si no hay referencia al pie, no hacer nada
-
-        Ray ray = new Ray(foot.position, Vector3.up * 0.5f); // Crear un rayo que se origina en la posición del pie y apunta hacia abajo (hacia el suelo)
-        RaycastHit hit; // Variable para almacenar la información del impacto del raycast
-
-        // Dibujamos el rayo para que lo veas en la pestaña Scene
-        Debug.DrawRay(foot.position, Vector3.down * 0.2f, Color.red); // Cambié la dirección a Vector3.down para que el rayo apunte hacia abajo, y la distancia a 0.2f para que sea más preciso al detectar el suelo
-
-        // Cambié la distancia a 0.2f porque 1.2f es MUCHO (detectaría el suelo antes de pisar)
-        if (Physics.Raycast(foot.position, Vector3.down, out hit, 0.2f, groundLayer)) // Si el raycast detecta una colisión con el suelo dentro de la distancia especificada
+        // Comprueba que exista una referencia al pie.
+        if (foot == null)
         {
-            if (!footState) // Si el pie no estaba tocando el suelo en el frame anterior, entonces generamos el efecto de polvo
+            // Detiene el método si no hay un pie asignado.
+            return;
+        }
+
+        // Guarda la información del punto donde se detecta el suelo.
+        RaycastHit hit;
+
+        // Dibuja un rayo rojo hacia abajo para visualizar la detección en Scene.
+        Debug.DrawRay(
+            foot.position,
+            Vector3.down * 0.2f,
+            Color.red
+        );
+
+        // Comprueba si hay suelo debajo del pie a una distancia de 0.2 unidades.
+        if (Physics.Raycast(
+            foot.position,
+            Vector3.down,
+            out hit,
+            0.2f,
+            groundLayer))
+        {
+            // Comprueba si el pie acaba de entrar en contacto con el suelo.
+            if (!footState)
             {
-                // Aparece el humo
-                GameObject tempDust = Instantiate(dustPrefab, hit.point + Vector3.up * 0.05f, Quaternion.identity); // Instanciamos el prefab del polvo en la posición del impacto del raycast, con un pequeño desplazamiento hacia arriba para que no se vea cortado por el suelo
+                // Crea el efecto de polvo en el punto donde el pie toca el suelo.
+                GameObject tempDust = Instantiate(
+                    dustPrefab,
+                    hit.point + Vector3.up * 0.05f,
+                    Quaternion.identity
+                );
 
-                // --- CAMBIO CLAVE: Destruir el objeto después de 2 segundos ---
-                Destroy(tempDust, destroyTime); // Esto asegura que el efecto de polvo se destruya automáticamente después de un tiempo, evitando que se acumulen muchos objetos en la escena y afecten el rendimiento
+                // Destruye el efecto después del tiempo configurado.
+                Destroy(tempDust, destroyTime);
 
-                footState = true; // Actualizamos el estado del pie para que no se genere el efecto de polvo en cada frame mientras el pie sigue tocando el suelo, sino solo cuando el pie toque el suelo por primera vez (cuando cambia de no tocar a tocar)
+                // Indica que el pie está tocando el suelo.
+                footState = true;
             }
         }
-        else // Si el raycast no detecta el suelo, significa que el pie no está tocando el suelo, así que actualizamos el estado del pie a false para que se pueda generar el efecto de polvo la próxima vez que toque el suelo
+        else
         {
-            footState = false; // El pie no está tocando el suelo, así que actualizamos el estado a false para que se pueda generar el efecto de polvo la próxima vez que toque el suelo
+            // Indica que el pie dejó de tocar el suelo.
+            footState = false;
         }
     }
 }
